@@ -1,0 +1,57 @@
+﻿<Window x:Class="AvalonDockMVVM.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AvalonDockMVVM"
+        xmlns:v="clr-namespace:AvalonDockMVVM.View"
+        xmlns:vm="clr-namespace:AvalonDockMVVM.ViewModel"
+        xmlns:dock="http://schemas.xceed.com/wpf/xaml/avalondock"
+        xmlns:dockctrl="clr-namespace:Xceed.Wpf.AvalonDock.Controls;assembly=Xceed.Wpf.AvalonDock"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="350" Width="525"
+        >
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+
+    <Menu Grid.Row="0" DataContext="{Binding MenuViewModel}" ItemsSource="{Binding Items}">
+      <Menu.Resources>
+        <Style TargetType="{x:Type MenuItem}" BasedOn="{StaticResource {x:Type MenuItem}}">
+          <Setter Property="Command" Value="{Binding Command}" />
+          <Setter Property="Header" Value="{Binding Header}" />
+          <Setter Property="IsCheckable" Value="{Binding IsCheckable}" />
+          <Setter Property="IsChecked" Value="{Binding IsChecked}" />
+        </Style>
+        <HierarchicalDataTemplate DataType="{x:Type vm:MenuItemViewModel}" ItemsSource="{Binding Items}" />
+      </Menu.Resources>
+    </Menu>
+
+    <dock:DockingManager Grid.Row="1"
+                         DataContext="{Binding DockManagerViewModel}"
+                         DocumentsSource="{Binding Documents}"
+                         AnchorablesSource="{Binding Anchorables}" >
+
+      <dock:DockingManager.Resources>
+
+        <!-- add views for specific ViewModels -->
+        <DataTemplate DataType="{x:Type vm:SampleDockWindowViewModel}">
+          <v:SampleDockWindowView />
+        </DataTemplate>
+       
+      </dock:DockingManager.Resources>
+
+      <dock:DockingManager.LayoutItemContainerStyle>
+        <!-- you can add additional bindings from the layoutitem to the DockWindowViewModel -->
+        <Style TargetType="{x:Type dockctrl:LayoutItem}" >
+          <Setter Property="Title" Value="{Binding Model.Title}" />
+          <Setter Property="CloseCommand" Value="{Binding Model.CloseCommand}" />
+          <Setter Property="CanClose" Value="{Binding Model.CanClose}" />
+        </Style>
+      </dock:DockingManager.LayoutItemContainerStyle>
+
+    </dock:DockingManager>
+  </Grid>
+</Window>
